@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h4>Bookings</h4>
+<form method="post">
+    <label for="name">Guest Name</label>
+    <input name="name" placeholder="Guest Name" required>
+
+    <label for="Checkin">CheckIn Date</label>
+<input type="date" name="datein" id="datein" required>
+
+<label for="Checkout">Checkout Date</label>
+<input type="date" name="dateout" id="dateout" required>
+
+<label for="stay">Nights</label>
+<input type="number" name="stay" id="stay" required readonly>
+    <label for="category">Type of Booking</label>
+    <select name="category" id="category">
+        <option value="villa">Villa</option>
+        <option value="room">Room</option>
+        <option value="complete">Full Property</option>
+    </select>
+
+    <label for="food">Food Included</label>
+    <select name="food" id="food">
+        <option value="Yes">YES</option>
+        <option value="No">NO</option>
+    </select>
+    
+    <label for="price-stay">Total Amount(Stay) ₹</label>
+    <input type="number" name="price-stay" id="price-stay">
+
+    <label for="price-food" >Total Amount(Food) ₹</label>
+    <input type="number" name="price-food" id="price-food">
+
+   
+    <label for="TotalBill">Total Amount ₹</label>
+    <input type="text" id="total-bill" name="total-bill" readonly>
+
+    <button type="submit">Add Booking</button>
+</form>
+
+<hr>
+<h5>All Bookings</h5>
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+            <th>Nights</th>
+            <th>Booking Type</th>
+            <th>Food</th>
+            <th>Stay Amount (₹)</th>
+            <th>Food Amount (₹)</th>
+            <th>Total (₹)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %} 
+        <tr>
+            <td>{{ b.name }}</td>
+            <td>{{ b.checkin }}</td>
+            <td>{{ b.checkout }}</td>
+            <td>{{ b.Nights }}</td>
+            <td>{{ b.Category }}</td>
+            <td>{{ b.food }}</td>
+            <td>{{ b.Amountstay }}</td>
+            <td>{{ b.Amountfood }}</td>
+            <td>{{ (b.Amountstay | float) + (b.Amountfood | float) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+window.onload = function () {
+    const stayInput = document.getElementById('price-stay');
+    const foodInput = document.getElementById('price-food');
+    const totalBillInput = document.getElementById('total-bill');
+    const dateInInput = document.getElementById('datein');
+    const dateOutInput = document.getElementById('dateout');
+    const nightsInput = document.getElementById('stay');
+
+    function updateTotal() {
+        const stay = parseFloat(stayInput.value) || 0;
+        const food = parseFloat(foodInput.value) || 0;
+        const total = stay + food;
+        totalBillInput.value = total.toFixed(2);
+    }
+
+    function calculateNights() {
+        const checkin = new Date(dateInInput.value);
+        const checkout = new Date(dateOutInput.value);
+        if (!isNaN(checkin) && !isNaN(checkout)) {
+            const diffTime = checkout - checkin;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            nightsInput.value = diffDays > 0 ? diffDays : 0;
+        }
+    }
+
+    stayInput.addEventListener('input', updateTotal);
+    foodInput.addEventListener('input', updateTotal);
+    dateInInput.addEventListener('change', calculateNights);
+    dateOutInput.addEventListener('change', calculateNights);
+}
+</script>
+
+
+{% endblock %}

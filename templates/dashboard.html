@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard Overview</h2>
+
+<div class="d-flex justify-content-center my-4">
+    <table class="table table-bordered shadow" style="max-width: 600px; width: 100%;">
+            
+        <thead class="table-light">
+            <tr>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Total Bookings</td>
+                <td>{{ bookings }}</td>
+            </tr>
+            <tr>
+                <td>Total Income</td>
+                <td class="text-success">₹{{ income }}</td>
+            </tr>
+            <tr>
+                <td>Total Expense</td>
+                <td class="text-danger">₹{{ expense }}</td>
+            </tr>
+            <tr class="table-info">
+                <td><strong>Net Profit</strong></td>
+                <td><strong>₹{{ income - expense }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<h4>Upcoming Bookings</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in upcoming %}
+        <tr>
+            <td>{{ booking.name }}</td>
+            <td>{{ booking.checkin }}</td>
+            <td>{{ booking.checkout }}</td>
+            <td>{{ booking.Category }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No upcoming bookings.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

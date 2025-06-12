@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="post" class="p-3 border rounded bg-light" style="max-width: 500px;">
+    <h5 class="mb-3">Finance Manager</h5>
+
+    <!-- Type: Credit or Debit -->
+    <label for="type" class="form-label">Transaction Type</label>
+    <select name="type" id="type" class="form-select mb-3" required>
+        <option value="" disabled selected>Select Type</option>
+        <option value="credit">Credit (Income)</option>
+        <option value="debit">Debit (Expense)</option>
+    </select>
+
+    <!-- Description or Reason -->
+    <label for="description" class="form-label">Reason / Description</label>
+    <input type="text" name="description" id="description" class="form-control mb-3" placeholder="e.g. Grocery, Rent, Salary..." required>
+
+    <!-- Amount -->
+    <label for="amount" class="form-label">Amount (₹)</label>
+    <input type="number" step="0.01" name="amount" id="amount" class="form-control mb-3" placeholder="Enter amount" required>
+
+    <!-- Date -->
+    <label for="date" class="form-label">Date</label>
+    <input type="date" name="date" id="date" class="form-control mb-4" required>
+
+    <button type="submit" class="btn btn-primary w-100">Add Entry</button>
+</form>
+
+<hr>
+<h2>Transactions List</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount (₹)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in expenses %}
+        <tr>
+            <td>{{ e.description }}</td>
+            <td>{{ e.date }}</td>
+            <td>
+                <span class="badge {% if e.type|lower == 'credit' %}bg-success{% else %}bg-danger{% endif %}">
+                    {{ e.type.title() }}
+                </span>
+            </td>
+            <td class="{% if e.type|lower == 'credit' %}text-success{% else %}text-danger{% endif %}">
+                ₹{{ e.amount }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
