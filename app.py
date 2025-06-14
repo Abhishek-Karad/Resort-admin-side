@@ -16,13 +16,13 @@ def dashboard():
 
     for e in mongo.db.expenses.find():
         t = e.get('type')  
-        amt = e.get('amount', 0)  # default to 0 if 'amount' is missing
+        amt = e.get('amount', 0) 
 
         if t == 'credit':
             total_income += amt
         else :
             total_expense += amt
-        # Optional: skip if type is missing or malformed
+ 
 
     # For upcoming bookings
     from datetime import datetime
@@ -63,7 +63,7 @@ def bookings():
         mongo.db.expenses.insert_one({
             "description": name,
             "amount": total_bill,
-            "type": "credit"  # must match 'credit' in dashboard route
+            "type": "credit" 
         })
 
         return redirect(url_for('bookings'))
