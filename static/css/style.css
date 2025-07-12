@@ -436,3 +436,12 @@ table th, table td {
     text-align: center;
     vertical-align: middle;
 }
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #c3cfe2, #f5f7fa);
+}

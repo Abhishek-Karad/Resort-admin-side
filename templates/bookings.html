@@ -54,6 +54,7 @@
             <th>Stay Amount (₹)</th>
             <th>Food Amount (₹)</th>
             <th>Total (₹)</th>
+           
         </tr>
     </thead>
     <tbody>
@@ -68,6 +69,12 @@
             <td>{{ b.Amountstay }}</td>
             <td>{{ b.Amountfood }}</td>
             <td>{{ (b.Amountstay | float) + (b.Amountfood | float) }}</td>
+            <td>
+                <form action="{{ url_for('delete_booking', booking_id=(b._id)) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this booking?');">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+            
         </tr>
         {% endfor %}
     </tbody>

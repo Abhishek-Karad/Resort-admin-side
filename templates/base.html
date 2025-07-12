@@ -11,12 +11,15 @@
 <div class="container mt-4">
     <h2>KOKAN KINARA MULSHI</h2>
     <nav>
-        <a href="/">Dashboard</a> |
-        <a href="/bookings">Bookings</a> |
-        <a href="/expenses">Expenses</a> |
-        <a href="/calendar">Calendar</a>
-    </nav>
-    <hr>
+  <a href="{{ url_for('dashboard') }}">Dashboard</a>
+  <a href="{{ url_for('bookings') }}">Bookings</a>
+  <a href="{{ url_for('expenses') }}">Expenses</a>
+  <a href="{{ url_for('calendar') }}">Calendar</a>
+
+  {% if session.get('user') %}
+    <a href="{{ url_for('logout') }}" style="float:right;">Logout</a>
+  {% endif %}
+</nav>
     {% block content %}{% endblock %}
 </div>
 

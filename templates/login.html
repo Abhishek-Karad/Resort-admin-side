@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="max-width: 500px; margin: 0 auto;">
+    <h2>Login</h2>
+    <form method="post" class="finance-form">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" placeholder="Enter your username" required>
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+
+        <button type="submit" class="btn">Login</button>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              <ul style="margin-top: 1rem;">
+                {% for message in messages %}
+                    <li class="text-danger">{{ message }}</li>
+                {% endfor %}
+              </ul>
+          {% endif %}
+        {% endwith %}
+    </form>
+</div>
+{% endblock %}
