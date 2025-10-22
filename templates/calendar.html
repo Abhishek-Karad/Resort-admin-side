@@ -8,7 +8,27 @@
 document.addEventListener('DOMContentLoaded', function() {
     var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
-        events: '/calendar-data'
+        events: '/calendar-data',
+        eventContent: function(arg) {
+            var name = arg.event.extendedProps.name || 'Unknown';
+            var category = arg.event.extendedProps.category || arg.event.title || '';
+            var rooms = arg.event.extendedProps.rooms;
+
+            var titleLine = document.createElement('div');
+            titleLine.className = 'fc-title-line';
+            titleLine.textContent = name + ' - ' + category;
+
+            var customEls = [ { domNodes: [titleLine] } ];
+
+            if (category === 'room' && rooms) {
+                var roomsLine = document.createElement('div');
+                roomsLine.className = 'fc-rooms-badge';
+                roomsLine.textContent = rooms + ' room' + (rooms > 1 ? 's' : '');
+                customEls.push({ domNodes: [roomsLine] });
+            }
+
+            return { domNodes: customEls.flatMap(function(x){return x.domNodes;}) };
+        }
     });
     calendar.render();
 });

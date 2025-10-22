@@ -283,6 +283,27 @@ ul, ol {
   box-shadow: var(--shadow-medium);
 }
 
+.fc .fc-daygrid-event-harness .fc-event, .fc .fc-daygrid-event {
+  white-space: normal !important; /* allow wrapping */
+  line-height: 1.2;
+}
+
+.fc-title-line {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.fc-rooms-badge {
+  margin-top: 2px;
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  background: rgba(49, 130, 206, 0.15);
+  color: var(--primary-color);
+  border: 1px solid rgba(49, 130, 206, 0.25);
+  border-radius: 999px;
+}
+
 .fc-header-toolbar {
   margin-bottom: 1rem !important;
 }
