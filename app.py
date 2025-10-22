@@ -95,7 +95,8 @@ def bookings():
             "food": request.form['food'],
             "Amountstay": amount_stay,
             "Amountfood": amount_food,
-            "TotalBill": total_bill
+            "TotalBill": total_bill,
+            "notes": request.form.get('notes', '')
         }
 
         # Create booking first
@@ -141,7 +142,8 @@ def edit_booking(booking_id):
             "food": request.form['food'],
             "Amountstay": amount_stay,
             "Amountfood": amount_food,
-            "TotalBill": total_bill
+            "TotalBill": total_bill,
+            "notes": request.form.get('notes', '')
         }
 
         mongo.db.bookings.update_one({"_id": ObjectId(booking_id)}, {"$set": updated_fields})
@@ -236,6 +238,99 @@ def delete_booking(booking_id):
         return redirect(url_for('bookings'))
     except Exception as e:
         return f"An error occurred: {e}", 500
+
+@app.route('/analysis')
+def analysis():
+    # Get all bookings and expenses
+    bookings = list(mongo.db.bookings.find())
+    expenses = list(mongo.db.expenses.find())
+    
+    # Create month-wise analysis
+    monthly_data = {}
+    
+    # Process bookings for month-wise analysis
+    for booking in bookings:
+        if 'checkin' in booking:
+            try:
+                # Extract year-month from checkin date
+                checkin_date = datetime.strptime(booking['checkin'], '%Y-%m-%d')
+                month_key = checkin_date.strftime('%Y-%m')
+                
+                if month_key not in monthly_data:
+                    monthly_data[month_key] = {
+                        'month_name': checkin_date.strftime('%B %Y'),
+                        'total_income': 0,
+                        'total_expense': 0,
+                        'booking_stay_amount': 0,
+                        'booking_food_amount': 0,
+                        'total_booking_amount': 0,
+                        'booking_count': 0,
+                        'other_expenses': 0
+                    }
+                
+                # Add booking amounts
+                stay_amount = booking.get('Amountstay', 0)
+                food_amount = booking.get('Amountfood', 0)
+                total_amount = booking.get('TotalBill', 0)
+                
+                monthly_data[month_key]['booking_stay_amount'] += stay_amount
+                monthly_data[month_key]['booking_food_amount'] += food_amount
+                monthly_data[month_key]['total_booking_amount'] += total_amount
+                monthly_data[month_key]['total_income'] += total_amount
+                monthly_data[month_key]['booking_count'] += 1
+                
+            except ValueError:
+                continue
+    
+    # Process expenses for month-wise analysis
+    for expense in expenses:
+        if 'date' in expense:
+            try:
+                # Extract year-month from expense date
+                expense_date = datetime.strptime(expense['date'], '%Y-%m-%d')
+                month_key = expense_date.strftime('%Y-%m')
+                
+                if month_key not in monthly_data:
+                    monthly_data[month_key] = {
+                        'month_name': expense_date.strftime('%B %Y'),
+                        'total_income': 0,
+                        'total_expense': 0,
+                        'booking_stay_amount': 0,
+                        'booking_food_amount': 0,
+                        'total_booking_amount': 0,
+                        'booking_count': 0,
+                        'other_expenses': 0
+                    }
+                
+                amount = expense.get('amount', 0)
+                expense_type = expense.get('type', 'debit')
+                
+                if expense_type == 'credit':
+                    monthly_data[month_key]['total_income'] += amount
+                else:
+                    monthly_data[month_key]['total_expense'] += amount
+                    monthly_data[month_key]['other_expenses'] += amount
+                    
+            except ValueError:
+                continue
+    
+    # Sort months in descending order (most recent first)
+    sorted_months = sorted(monthly_data.items(), key=lambda x: x[0], reverse=True)
+    
+    # Calculate totals
+    total_income = sum(data['total_income'] for data in monthly_data.values())
+    total_expense = sum(data['total_expense'] for data in monthly_data.values())
+    total_booking_stay = sum(data['booking_stay_amount'] for data in monthly_data.values())
+    total_booking_food = sum(data['booking_food_amount'] for data in monthly_data.values())
+    total_other_expenses = sum(data['other_expenses'] for data in monthly_data.values())
+    
+    return render_template('analysis.html', 
+                         monthly_data=sorted_months,
+                         total_income=total_income,
+                         total_expense=total_expense,
+                         total_booking_stay=total_booking_stay,
+                         total_booking_food=total_booking_food,
+                         total_other_expenses=total_other_expenses)
 
 
 if __name__ == '__main__':

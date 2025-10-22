@@ -41,6 +41,7 @@
             <th>Check-In</th>
             <th>Check-Out</th>
             <th>Category</th>
+            <th>Rooms</th>
         </tr>
     </thead>
     <tbody>
@@ -50,9 +51,16 @@
             <td>{{ booking.checkin }}</td>
             <td>{{ booking.checkout }}</td>
             <td>{{ booking.Category }}</td>
+            <td>
+                {% if booking.rooms %}
+                    {{ booking.rooms }} room{% if booking.rooms > 1 %}s{% endif %}
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
         </tr>
         {% else %}
-        <tr><td colspan="4">No upcoming bookings.</td></tr>
+        <tr><td colspan="5">No upcoming bookings.</td></tr>
         {% endfor %}
     </tbody>
 </table>

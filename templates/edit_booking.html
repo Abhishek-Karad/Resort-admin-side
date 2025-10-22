@@ -42,6 +42,9 @@
     <label for="TotalBill">Total Amount ₹</label>
     <input type="text" id="total-bill" name="total-bill" readonly value="{{ booking.TotalBill }}">
 
+    <label for="notes">Notes</label>
+    <textarea name="notes" id="notes" rows="3" placeholder="Add any additional notes about this booking...">{{ booking.notes or '' }}</textarea>
+
     <button type="submit">Update Booking</button>
 </form>
 
